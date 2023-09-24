@@ -1,0 +1,24 @@
+This is the text file explaining how I built the keylogger.
+
+I followed a YouTube tutorial by Shaun Halverson.
+
+Firstly, I ensured that the pip module was installed for Python. 
+I then downloaded the pynput library which allowed me to import the keyboard function into my program.
+The first code I wrote was the if statement seen at the bottom of keylogger.py
+This if statement creates the main method that runs when the program is runs.
+I then created a listener variable. This tells python to send any key presses to the keyPressed variable.
+I then start the listener under the if statement and also an input statement to tell python that we are ready to take in input.
+
+After that if statement I then defined the keyPressed variable.
+We did not have to define "key" used in the define function because the on_press already does that for us.
+I then use the print statement to convert the key into a string variable.
+Under that is the with statement that creates and opens the file we write the key presses to.
+I used the 'a' function to tell python to just append the key presses and not to overwrite them.
+After that, I wrote "as logkey" to make it simpler to call on that function.
+
+Under that is the try and except loop that will actually log the key strokes and give an error if it cannot
+Under the "try:" we define the char as key.char and tell python to write that char into the logkey file
+If python cannot do that due to a special character or parameter we have not defined,
+we have that except portion to spit out an error and let us know something went wrong.
+
+That's it! I hope you enjoyed my explanation!
