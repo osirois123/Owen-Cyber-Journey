@@ -2,6 +2,10 @@ This is the text file explaining how I built the keylogger.
 
 I followed a YouTube tutorial by Shaun Halverson.
 
+Keyloggers can be used by threat actors to obtain confidential login information, data entries, or server configurations
+that can allow them to pivot to other portions of your network. Knowing what one looks like and how it is created can really
+allow someone to catch the hacker before they are able to get deeper in the system. Now onto how I built the logger.
+
 Firstly, I ensured that the pip module was installed for Python. 
 I then downloaded the pynput library which allowed me to import the keyboard function into my program.
 The first code I wrote was the if statement seen at the bottom of keylogger.py
