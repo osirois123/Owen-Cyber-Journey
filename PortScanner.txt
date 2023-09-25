@@ -1,0 +1,22 @@
+This is my text file that explains how I built the port scanner.
+
+I used a YouTube video tutorial by HackerSploit. Link here: https://www.youtube.com/watch?v=d3D8PAZV51g
+
+A port scanner is a simple program that will tell the user what ports are open on the network during that time.
+This can be used by cybersecurity profesionals to see what ports are being used and determine if they 
+should be closed during that time. This allows them to see if an unauthorized user is on a port that should be
+open. It can also be used on the hacker side to see what ports are available for use. Now onto how it was built.
+
+I first import the socket library so I can use the python functions that I need. Next I define varible "s" so that when
+I use that variable python knows that it is in IPv4 and we are using the TCP protocol. Next we use the timeout function
+included in the socket library to set a timeout of 5 seconds. This is because some ports may take a while to generate a
+response for us. After that we need to define a host and a port number. We use simple variable naming and user input 
+to get these values based off of what the user inputs.
+
+Next we start to make the actual port scanning function. We define our port scanner so that when our "s" variable
+cannot connect to the port it will not display an error message but instead print "This port it closed". The else statement
+will run if the port is open and display "This port is open". This simple port scanner scans only one port at a time and
+will only tell you if it is open or closed. Try it yourself with your routers IP address and port 22. It should respond with
+"the port is opnen" if your SSH is active.
+
+I hope you enjoyed reading!
