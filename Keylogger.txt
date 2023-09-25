@@ -1,6 +1,6 @@
 This is the text file explaining how I built the keylogger.
 
-I followed a YouTube tutorial by Shaun Halverson.
+I followed a YouTube tutorial by Shaun Halverson. Link here: https://www.youtube.com/watch?v=mDY3v2Xx-Q4&list=PLyf3HIc5hqTNgTtHaNOlLTRVTQAhIgcvZ&index=15
 
 Keyloggers can be used by threat actors to obtain confidential login information, data entries, or server configurations
 that can allow them to pivot to other portions of your network. Knowing what one looks like and how it is created can really
