@@ -1,0 +1,17 @@
+Here is a simple hashing program that takes user input and converts it into a hashed string using SHA256.
+
+This is the YouTube video that I used to help make the program: https://www.youtube.com/watch?v=i-h0CtKde6w&t=534s
+
+Hashing is useful in cybersecurity when looking at the integrity of something. The idea of hashing is that it will take input
+and convert that into a digital fingerprint that will be unique to that exact input. The slightest change in the input will
+change the hash completely showing that the contents of that input has changed. This is extremely important in security so
+that we can ensure that the data we send has stayed the same. It is also useful to store passwords so that if the password
+cache is breached the actual plaintext passwords are not at risk. Here is how I built the program.
+
+First I import the hashlib library so that I can access the functions inside of that library. Next I define the hash variable
+so that when I call upon it, it will use the SHA256 to hash the message. The next line asks for user input so that we can
+take that input and hash it. We then update the hash so that it can encode the user input that we just got. Lastly we define
+a new variable to store the hash value. The .hexdigest is the function that actually hashes the input and then after we print
+that hashed value. Now you can enter input and get it to output a hash. 
+
+Hope you enjoy this simple program and analysis!
