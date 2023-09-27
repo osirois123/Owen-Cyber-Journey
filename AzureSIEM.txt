@@ -2,27 +2,31 @@ Hello this is the text file that contains my process of setting up a SIEM using 
 
 I used this video tutorial on youtube by Josh Madakor: https://www.youtube.com/watch?v=RoZeVbbZ0o0
 
-The goal of this is to create a Microsoft Sentinel, which is a cloud based SIEM, and give it data to collect. First we create a virtual machine 
-that will act as our honeypot and then monitor attacks that come in from all over the world. In the end we should have a SIEM that collects data 
-on attacks on our virtual machine and display that data in an interesting and easy to read format.
+The goal of this is to create a Microsoft Sentinel, which is a cloud based SIEM, and give it data to collect. First we create 
+a virtual machine that will act as our honeypot and then monitor attacks that come in from all over the world. In the end we 
+should have a SIEM that collects data on attacks on our virtual machine and display that data in an interesting and easy
+to read format.
 
-The process starts with creating the virtual machine. Log onto Azure and start by clicking the "create a virtual machine" button. This machine is
-meant to be available to anyone on the internet. It will act as a honeypot to collect attack data. Create a resource group to put everything we do
-in the lab into one place. Give the virtual machine a name and choose a region for it to work in. I named mine "PotFullOfHoney" and chose the region
-"US) West US 3". Next create a username and password that you will not forget, as this will act as the login information for the virtual machine.
-After this move onto setting up the network portion of the virtual machine. Configure a new network security group and we need to delete the default
-inbound rule and create our own. Set destination port to "*" to allow all ports as destinations, protocol should be "any", make the priority low so
-anything 200 and below, and then give the rule a name. This will allow all web traffic to ping our machine so in theory, it should get attacked quite 
-often giving us lots of data points in our SIEM.
+The process starts with creating the virtual machine. Log onto Azure and start by clicking the "create a virtual machine" button. 
+This machine is meant to be available to anyone on the internet. It will act as a honeypot to collect attack data. Create a 
+resource group to put everything we do in the lab into one place. Give the virtual machine a name and choose a region for it to 
+work in. I named mine "PotFullOfHoney" and chose the region "(US) West US 3". Next create a username and password that you will
+not forget, as this will act as the login information for the virtual machine. After this move onto setting up the network 
+portion of the virtual machine. Configure a new network security group and we need to delete the default inbound rule and 
+create our own. Set destination port to "*" to allow all ports as destinations, protocol should be "any", make the priority 
+low so anything 200 and below, and then give the rule a name. This will allow all web traffic to ping our machine so in theory, 
+it should get attacked quite often giving us lots of data points in our SIEM.
 
-While the virtual machine is deploying we need to create a log analytics workspace. Type that into the search bar and then create a new workspace.
-Add that workspace to your resource group and then give it a name for the lab. Click create and then allow that to deploy as well. Next we have to go
-into the Microsoft Cloud Defender settings and ensure that the server function is turned on as well as the CSPM. This will protect our log
-and the information contained inside of it. After this go back to the log analytics workspace and connect it to the virtual machine.
+While the virtual machine is deploying we need to create a log analytics workspace. Type that into the search bar and then 
+create a new workspace. Add that workspace to your resource group and then give it a name for the lab. Click create and then 
+allow that to deploy as well. Next we have to go into the Microsoft Cloud Defender settings and ensure that the server 
+function is turned on as well as the CSPM. This will protect our log and the information contained inside of it. After this 
+go back to the log analytics workspace and connect it to the virtual machine.
 
-We then have to go and create the Microsoft Sentinel which is super simple. Type Sentinel into the search bar and then connect it to your log that you
-created in the step above. Let it run for a minute or two and you should be good to go. After this go into the virtual machine settings and find the
-public IP address. Next we need to start the "Remote Desktop Connection" from a windows device so we can go into the virtual machine and mess around
-with it. Paste the IP address into the input box that Remote Desktop Connection gives you. Then click more options and log into the machine with the
-credentials we specified earlier. Make sure to incorrectly login at first so that you can have an event to look at. Once in the machine set up Edge, 
-open Event Viewer and click on security. Here we can see our incorrect login with the event ID of 4625. Video 15min
+We then have to go and create the Microsoft Sentinel which is super simple. Type Sentinel into the search bar and then connect 
+it to your log that you created in the step above. Let it run for a minute or two and you should be good to go. After this go 
+into the virtual machine settings and find the public IP address. Next we need to start the "Remote Desktop Connection" from 
+a windows device so we can go into the virtual machine and mess around with it. Paste the IP address into the input box that 
+Remote Desktop Connection gives you. Then click more options and log into the machine with the credentials we specified earlier.
+Make sure to incorrectly login at first so that you can have an event to look at. Once in the machine set up Edge, open Event 
+Viewer and click on security. Here we can see our incorrect login with the event ID of 4625. Video 15min
