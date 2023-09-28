@@ -1,0 +1,83 @@
+Hello this is the text file that contains my process of setting up a SIEM using Microsoft Azure.
+
+I used this video tutorial on youtube by Josh Madakor: https://www.youtube.com/watch?v=RoZeVbbZ0o0
+Powershell script: https://github.com/joshmadakor1/Sentinel-Lab/blob/main/Custom_Security_Log_Exporter.ps1
+API: https://ipgeolocation.io/
+
+My video showing off the project is at the bottom of the file if you want to watch it. :-)
+
+The goal of this is to create a Microsoft Sentinel, which is a cloud based SIEM, and give it data to collect. First we create 
+a virtual machine that will act as our honeypot and then monitor attacks that come in from all over the world. In the end we 
+should have a SIEM that collects data on attacks on our virtual machine and display that data in an interesting and easy
+to read format.
+
+The process starts with creating the virtual machine. Log onto Azure and start by clicking the "create a virtual machine" button. 
+This machine is meant to be available to anyone on the internet. It will act as a honeypot to collect attack data. Create a 
+resource group to put everything we do in the lab into one place. Give the virtual machine a name and choose a region for it to 
+work in. I named mine "PotFullOfHoney" and chose the region "(US) West US 3". Next create a username and password that you will
+not forget, as this will act as the login information for the virtual machine. After this move onto setting up the network 
+portion of the virtual machine. Configure a new network security group and we need to delete the default inbound rule and 
+create our own. Set destination port to "*" to allow all ports as destinations, protocol should be "any", make the priority 
+low so anything 200 and below, and then give the rule a name. This will allow all web traffic to ping our machine so in theory, 
+it should get attacked quite often giving us lots of data points in our SIEM.
+
+While the virtual machine is deploying we need to create a log analytics workspace. Type that into the search bar and then 
+create a new workspace. Add that workspace to your resource group and then give it a name for the lab. Click create and then 
+allow that to deploy as well. Next we have to go into the Microsoft Cloud Defender settings and ensure that the server 
+function is turned on as well as the CSPM. This will protect our log and the information contained inside of it. After this 
+go back to the log analytics workspace and connect it to the virtual machine.
+
+We then have to go and create the Microsoft Sentinel which is super simple. Type Sentinel into the search bar and then connect 
+it to your log that you created in the step above. Let it run for a minute or two and you should be good to go. After this go 
+into the virtual machine settings and find the public IP address. Next we need to start the "Remote Desktop Connection" from 
+a windows device so we can go into the virtual machine and mess around with it. Paste the IP address into the input box that 
+Remote Desktop Connection gives you. Then click more options and log into the machine with the credentials we specified earlier.
+Make sure to incorrectly login at first so that you can have an event to look at. Once in the machine set up Edge, open Event 
+Viewer and click on security. Here we can see our incorrect login with the event ID of 4625. Later in the lab we will actually
+connect these events in an API so that it can show these incorrect logins on a international map. 
+
+Next important step is to turn the firewall off on the virtual machine. This will allow the virtual machine to reply to ICMP 
+requests from random users so people on the internet can easily find our machine. Open wf.msc in the virtual machine which will 
+allow you to mess with the firewall settings. Click "windows defender firewall properties" and navigate to each of the profiles.
+Make sure that each of them are turned off and then go to your personal computers command line and try to ping the virtual machine.
+The ping should show that it is connecting to the device and recieving an echo back meaning that it is available to the internet
+and "hackers" can access it. 
+
+After this we need to get a microsoft powershell script to export the data to our API. I used this link at the top of this text
+file to get that powershell script. Open powershell ise on your virtual machine and paste that code into a new file. Save this file
+somewhere you can retreive it on your VM(virtual machine). To convert the IP addresses to longitude and latitude we collect we need 
+to get our specific API key from the website we are going to use. The link at the top will direct you to that website. Sign up for a
+free account and then use that API key that it gives you once the account set up is comeplete. Paste the API key into the second line
+of that powershell code. Run the powershell code and now we have an active log of failed login attempts. To view this go to the
+file viewer, this pc, windows(c:), then program data. It is hidden so make sure to click view hidden files in the file viewer. In
+that file you should see a failed_rdp log. This is where you can see the geodata of the attacks.
+
+Now we need to make a custom log in Azure to bring in that failed_rdp log. Go into tables in your Azure log and create a new (MMA)
+custom log. Copy and paste the contents of that failed_rdp log onto a text file on your real computer and upload it to that custom
+log that we created. In the collection paths, type in where the file is located on the virtual machine which should be in the c drive
+programdata, failed_rdp.log. Give the custom log a name and then create it. Then go to logs in the analytics workspace and create 
+a new query that runs that new custom log we made. It may take a while to see entries so just run the log and then wait a bit unitl
+you see some output.
+
+The next thing we have to do is extract the raw data and create fields for all of the data we want to collect. Now this part of the
+lab took me the longest. Azure has updated and so the tutorial video does not work anymore as the custom fields function in the log
+analytics workspace is no longer a function. I started to write my own code to extract the fields and create new custom ones but this
+was taking me days at a time. Luckily, on the third day of writing my own code, I looked in the comments and saw a HERO posted his code 
+that he made for this step. I input the code into my query and viola the fields were made and sorted like I wished. To test this I made 
+a failed login attempt waited a couple minutes and then checked the query. It should show up and you can see your own failed login attempt.
+
+After this is done go into Sentinel and set up a new workbook. Delete the widgets that are there and create a new query within this
+workbook. Copy and paste the same script that is in the log analytics worksheet query and then run the query. The data should be nice
+and neat looking with each field having the correct data within it. Next we want to vizualize the data in a world map. Use the vizualization
+drop down menu and select the map entry. In the menu that pops up on the right hand side choose to either latitude/longitude or country/region
+as your "Location Info using". I have had better accuracy and experience using the latitude/longitude. Scroll down that menu and make sure
+that under each entry of the drop down menu has the correct field associated with it. Now save the map, give it a name, and save it to
+your resource group. Thats it! Now we have a working map that will show failed login attempts for our virtual machine.
+
+If you read this far thank you so much, I hope you enjoyed it. Below is the link to my YouTube video showing off the project.
+
+My YouTube link: https://www.youtube.com/watch?v=t3nyR81OSDU
+
+One more thing. If you do create this yourself MAKE SURE to delete the resource group after you are done playing around with it as this can
+eat up all of the free $200 you get with Azure. I forgot to do this and it spent an extra couple dollars which is not a big deal but if it
+runs for months it could start charging you.
