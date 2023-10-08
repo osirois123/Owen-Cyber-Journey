@@ -1,0 +1,99 @@
+This text file is documenting my journey through this Packet Tracer project. It is the first in a series of
+Packet Tracer projects posted on gurutechnetworks.otombenard.com. This is where I am pulling these problems
+from and the creator also posted videos detailing the projects. I also made a YouTube video showing off my
+final product. The link is at the bottom of the file. Enjoy!
+
+Link to this projects page: https://gurutechnetworks.otombenard.com/assetsProject/project1
+
+The problem details: 
+                    Operate seperately from HQ network
+                    One router and one switch 
+                    Three seperate departments 
+                    Each department has its own VLAN
+                    Each department must have its own wirless connection
+                    Hosts obtain IPv4 addresses automatically
+                    All devices on the network must be abe communicate with each other
+                    ISP base network 192.168.1.0
+
+Start by placing one router, one switch, three computers, and three printers. The printers and computers
+represent the seperate departments. They also need wireless access points in each department so those
+are added next. We then connect all the devices using a copper straight through wire. Next encompass
+each department with a colored box to make it easier to recognize. Then label each of the departments
+with whatever you would like to name them. Finally label them with their own VLANs.
+
+Next IP addresses need to be added. First we need to subnet our network to determine how many bits each
+of the departments needs. We have the space of 192.168.1.0 to work with and we have three departments to
+subnet. Our subnet mask is 255.255.255.0/24 and we need to borrow two bits from the last octet. This is 
+becausecthe number of subnets. If we had five subnets we would need to borrow an extra bit as borrwoing two 
+bits is equal to 4 while three is equal to 8. The bits we borrow must be more or equal to the same amount 
+of subnets that we need. After borrowing those bits our new subnet mask is 255.255.255.192/26. After determining 
+this we now have the information we need to sucessfully subnet our network. 
+
+To start our first subnet we need to determine the network ID and the broadcast ID. Once we get both of these
+we will have the host range that is able to be used in each department. The first subnet will start with a
+network ID of 192.168.1.0 as this is the first address available. The last address available in this subnet
+is 192.168.1.63, so this will become our broadcast ID. The reason we have 64 available addresses in this first
+subnet is because of the subnet mask we chose earlier. We borrowed the first two bits equaling 128, and 64 
+respectively. This is equal to 192 and the total we have avaialable is 256. If you subtract those numbers you
+get 64 leftover. This means that each of our subnets will have 64 avaiable addresses. Since the first address
+is used for the network ID, and the last is used for the broadcast ID, we have a total of 62 avaiable host
+addresses per subnet. The first subnets host range is 192.168.1.1-192.168.1.62. Our second subnet starts with
+its network ID of 192.168.1.64 and ends with a broadcast ID of 192.168.1.127. Second subnet host range is
+192.168.1.65-192.168.1.126. The third subnet starts with a network ID of 192.168.1.128 and ends in a broadcast
+ID of 192.168.1.191. Third subnet host range is 192.168.1.129-192.168.1.190. Now we are able to impliment this
+into our network.
+
+Start by labeling each department with its subnet mask. Next we have to configure each of the VLANs. Click on
+the switch, go to command line, use "en" to enable the switch, and use "config t" to start the configuring. Hover
+over the connections going into the switch and determine the range. My first range is Fa0/2-Fa0/4. Go back to
+the switch and use "int range" and append your interface range to accsess that interface range. Now access the
+switch port acccess mode. Use "switchport mode access" to do so. Then type "switchport access vlan ___" with
+the underscore being whatever you named the vlan. It should say it does not exist and it is creating a new
+VLAN. Repeat the steps starting at "int range" for your other subnets. Finish it off with "do wr" and then
+"exit". To check that it is all correct use "do sh start" and check that each interface is connected to the
+correct VLAN. Now the VLANs are configured and we can move on.
+
+Connect with the wireless access point in the first subnet. Go to config and then port 1. Give it a name and
+select "WPA2-PSK" and give it a PSK pass phrase. Do this for each of the wireless access points. Next we need
+to make sure that they can get IPv4 addresses automatically. To configure this we first go to the switch and
+configure interface fa0/1 which is to the router. Enter "int fa0/1", "swithport mode trunk", and "do wr".
+Now the configuring of the switch is done. Next is the router. Go to the router CLI and use "en" to enable
+"config t" to enter configure mode, "int gig0/0" as this is the router interface, "no sh", and "do wr" to
+turn off the default shutdown mode it is already in. If you go back you should see the arrows are turned green
+if you did this correctly. 
+
+We now need to create sub interfaces for each of the VLANs. To do this go into the router CLI. Make sure you
+are in the (config) mode. Use "int gig0/0.100" to create the sub interface for the first VLAN. Next use
+"encapsulation dot1Q 100" to encapsulate the VLAN in this new sub interface. Now we make the default gateway
+for the subnet. Use "ip address ___ ---" with ___ being the first available IP address on that VLAN and --- 
+being the subnet mask. For me that is 192.168.1.1 for the IP and 255.255.255.192 for the subnet mask. 
+Finish this with "do wr". Rinse and repeat for every VLAN.
+
+Now configure the DHCP server. This comes stock on CISCO routers so use "service dhcp" to activate it on the
+router. Use "ip dhcp pool ___-Pool" with ___ being whatever name you want to give to your first VLAN. I am
+using Department0. Now you are configuring that specific pool. Specify the network using "network ___ ---"
+with ___ being the network ID of the first VLAN and --- being your subnet mask. Mine are 192.168.1.0 and
+255.255.255.192. Use "default-router ___" with ___ being the first available IP in that VLAN. This defines
+the default gateway for that VLAN. Then use "dns-server ___" with ___ being the default gateway you just
+made for that VLAN. Finally give it a domain name using "domain-name ___" with ___ being the name you want
+to give it. Mine is "Department0.com". Use "exit" and repeat for other VLANs. After finishing this make sure
+to exit and use "do wr" to make the router write the configurations.
+
+Lastly we configure the end devices. Click on the first PC in your first VLAN and use config. Click "DHCP"
+and allow it some time to give it an IP address. Next go to the printer and click "FastEthernet0" and click
+"DHCP" and allow it time to get an address. Do the same for each of the VLANs. 
+
+Now we can test the network and ensure that each of the devices are acting the way they should be. This can
+also confirm that we have wireless connection and communication between devices. I am using a smartphone in
+VLAN 100, a laptop in VLAN 200, and a tablet in VLAN 300. Connect the smartphone by using the WIFI access
+point name you gave under SSID and type in the passkey you set. You should see a wifi signal from the phone
+now. Use the laptop now and turn it off. Take out the current module and put in a WPC module. This allows
+wireless connection. Now do the same with the SSID and passkey and it should connect. Lastly use the tablet
+and go to config. Do the same with the SSID and passkey. It should connect and now we can test. To test any
+end device go to its command line and type "ping ___" with ___ being the IP address you wish to ping. It 
+will fail first try and then it should give you a successful ping. 
+
+Thats it! Now we have a network that meets all of the requirements listed above. I hope you enjoyed reading
+and check out my YouTube video I made showing off my final product.
+
+My YouTube link: 
