@@ -96,4 +96,4 @@ will fail first try and then it should give you a successful ping.
 Thats it! Now we have a network that meets all of the requirements listed above. I hope you enjoyed reading
 and check out my YouTube video I made showing off my final product.
 
-My YouTube link: 
+My YouTube link: https://youtu.be/aSnDuZFMZ6I
