@@ -1,0 +1,125 @@
+This is a text file documenting my process completing this Packet Tracer project. This is the second project
+relating to Packet Tracer and just like the first, it came from here: gurutechnetworks.otombenard.com. This 
+is where I am finding these projects and I am using the video made about the project to aid my completion.
+At the bottom of this file should be my YouTube video showing off my final product. This project is a step above
+the first one and depicts a campus network. As a college student myself this project seemed super relevant for
+me and I think that it will help me understand how the network here at Appalachian State is set up.
+
+Link to project: https://gurutechnetworks.otombenard.com/assetsProject/project4
+
+Project requirements:
+                    Main campus network with:
+                        -Building A- departments: management, HR, finance, business
+                        -Building B- departments: engineering/computing, art and design
+                        -Building C- departments: student labs and IT, IT hosts the
+                        university web servers and other servers
+                        -No Building- email server hosted in the cloud
+                    Smaller campus network with:
+                        -Building 1- departments: health/science (mulitple floors: staff, student)
+                    Configure all core network equipment and some end devices, ensure
+                    end-end connectivity and access to all servers internal and external
+                        -Each department has its own seperate IP network
+                        -Switches configured with VLANs and security settings
+                        -RIPv2 used for routing internally and static routing used
+                        for the external server
+                        -Devices in Building A aquire IP dynamically from a router-
+                        based DHCP server
+
+With all of the requirements defined lets start the project. Start with one main router and name it. Next
+we need a layer three switch under the router. Give that a name and specify it is layer 3. After this each
+department needs its own layer 2 switch. Place four of them and label each of them. Next we place the switches
+for Building B. It needs two switches for both its departments. Place and label them. Lastly do this for
+Building C. It has two departments so two switches and label them. Next important part is the email server.
+It will need an extra router to connect this server with the main network. Without this extra router the 
+server will be internal and it was explicitally stated in the requirements that it must be external. Place
+the router and label it relating to the cloud. We will place and configure these later
+
+Now we will focus on making the main campus network as this is the bulk of the work. Place one printer and
+one PC for each of the departments excluding IT. I am labeling each of these but that is not required. The IT 
+department gets one PC and two servers. Label one server for web and the other for file transfer. Lastly place
+one other server next to the cloud router we placed in the last paragraph. Label it email server or something
+along those lines. Now we need to connect all the devices. Connect the two routers first using a serial
+connection. To do this first go into each router, turn it off, insert the "HWIC-2T" module, and turn it back
+on. Now we have a serial port on each router. Connect with a serial wire and continue. Now we use a copper
+straight through wire to connect the rest of the devices. Connect each end device to its respective switch and
+then connect each switch to the layer three switch and finally connect the layer 3 switch to the router.
+
+The branch campus is created next. Place one router, layer 3 switch, and two layer 2 switches. The two departments
+are staff and students; they each get one pc and one printer. Label them and make it look pretty :). 
+
+Now both branches are done setting up and now we need to configure each. Each department will get its own VLAN
+and also its own IP network. For each department I used VLAN_, with _ being 10-100, and the networks 192.168._.0/24, 
+with _ being 1-10. I chose /24 networks to give plenty room for extra devices and since it is commonly used.
+The cloud enviornment gets its own network; 20.0.0.0/30 since it has less than 3 end devices. Also the two routers
+get their own networks. I use 10.10.10.0/30 for the connection between main and branch campus. Then 10.10.10.4/30
+for the connection between main campus and the cloud router. A /30 network has 2 available hosts which is perfect
+since each of these networks has 2 end devices. 
+
+Now that we know what IP to configure each department with, we can go into each switch and router to configure them.
+First we turn on the routers. Go to the main campus router and configure each interface so it is open. Use "en" to
+enable the router, "config t" to bring it into configure mode, "int ___" then "no sh" for each interface, the ___ is
+each interface being used by the router. Our network has one gig interface, gig0/0, and two serial interfaces for each
+of the other routers. Those are interfaces se0/1/0 and se0/1/1. After all three have been configured finish with
+"do wr" so the router writes that configuration to memory. Configure the other two routers interfaces as needed. After
+all router interfaces have been turned on we turn on the L3 switches. To do this click the L3 switch and insert the "AC
+Power Supply" and wait a minute. The nodes on the connections should change to orange dots. 
+
+We connected the routers using a Serial DCE which has a clock rate associated with it. To enable traffic to flow into the
+cable we must set up this clock rate. Normally this comes with the manual and will specify the clock rate and how to
+configure it, but since this is virtual we have to use what is shown in the video and do our own research. Find the
+interfaces with the clocks next to them. Click the router and go into that interface. Once in the interface use 
+"clock rate 64000" to set the clock rate and "do wr" to write the configuration. Now do it once more for the other
+interface and you are all done.
+
+Layer 2 switches are configured next. Each VLAN needs to be configured on each L2 switch. Start by "en" and "config t"
+as we have been doing. Then "int range fa0/1-24" to configure all of its interfaces. "switchport access mode" to switch
+to the correct mode, then "switchport access vlan __" with __ being the vlan you are configuring. Finish with "do wr" to
+ensure the configuration is made and do this for each of the vlans. Next configure the L3 switch so it knows the vlans.
+To do this enable and bring it to configure mode. "int __" then "switchport mode access" and then "switchport access
+vlan __" with the __ for interface and vlan being the corresponding interface the vlan is connected with. For example
+my vlan 10 is connected to the L3 switch on port gig1/0/9. Do this for every interface on both of the L3 switches. Make
+sure that you finish each configuration with "do wr". 
+
+Now that the switches have the vlans connected on the correct ports we need to make sure they can all communicate. To do
+this we have to configure the L3 switch so it knows which port is the transport port. Find the port connected to the router
+and then enter configuring shell for that port. Once there use "switchport mode trunk" and "do wr" to configure this
+connenction. Now it should be configured correctly
+
+We still need to configure the IP addresses for the routers and the cloud network. Get into the configure shell for each
+interface use "ip address" and append to the end of that the IP address you made for that network and its subnet mask. Do 
+this for each interface on all three of the routers so they all have an assigned IP address. Only do this for the interfaces
+that are connected to routers. The only execption is the cloud enviornment. Give the server and the router an IP address
+using the method described above. I used a 20.0.0.0/30 network for the cloud. The router IP configuration can be done for
+the cloud router in the CLI but the server must be done statically. Go to the server, desktop, IP configuration, and then
+give it the appropriate IP address, subnet mask, and default gateway. Try to ping the default gateway and if you get a
+response you are good. Now everything should have an IP address that it can use.
+
+Now we must configure the DHCP and interVLAN routing. Lets start with the branch campus router. Access the interface that
+is connected to the L3 switch but at the end append it with .__ with the __ being the subnet. For example mine is on
+interface gig0/0 so I used "int gig0/0.90" as the vlan I am configuring was vlan 90. Now we are in a sub interface for
+that vlan. Next use "encapsulation dot1Q 90" to add the correct encapuslation, and then "ip address __ __" with the first
+__ being the first available IP address in that vlan and the second __ being the subent mask. Mine is IP address 192.
+168.9.1 with a subnet mask of 255.255.255.0. Do this for every vlan on the network and then finish with "do wr". Now
+we can move onto enabling DHCP. Enter the configure shell and type in service dhcp. Then we need to create
+a DHCP pool. Use "ip dhcp pool __--pool" with __ being the name of the department. Now in the dhcp configuring shell use
+"network __ __" with the first blank being the network ID and the second the subnet mask. Use "default-router __" with
+the __ being the default gateway for that network. Do the same again but switch default-router for dns-server. Exit 
+that dhcp configuration shell and repeat for the other dhcp pool/pools. To test this go to a PC on one of the vlans
+and try to get an IP using DHCP. If it gets one then you are all good!
+
+Now we have to do this for the main campus. This will take a while and is quite tedious. Once it is all done you should
+be able to go into the PCs and printers and turn on DHCP. They should all get an IP address and be able to communicate
+with each other. To test this try to ping different devices. The last thing we need to do is configure the routing
+protocol. Defined in the instructions we use RIPv2. We have three networks, the two vlans in the branch campus, and the
+network between routers. Start by entering the configuration termminal and use "router rip" to configure the protocol.
+Then "version 2" to specify the version. Now enter each network we have. Use "network __" with the __ being the network
+ID that needs to be connected. Mine are 192.168.9.0, 192.168.10.0, and 10.10.10.0. Once all three are input use do wr.
+Now we must do the same for the main campus router. Enter configuration terminal, enter rip version two using the commands
+shown above. Then type in all ten networks, eight vlans, one connecting the main campus to branch, and one from cloud to
+main campus. Once all are entered use do wr and we should be able to ping from main campus to branch campus. The final
+thing we need to do is to configure RIPv2 on the cloud router. Once that is done we have full communication. All of the
+requirements are met and our network is done.
+
+I hope you enjoyed my explanation and here is the link to my YouTube video.
+
+Link: https://youtu.be/BP5lk8hR6ho
