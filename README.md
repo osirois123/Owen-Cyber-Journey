@@ -1,6 +1,6 @@
 # Owen-Cyber-Journey
 
-This repository contains programs that I am building to enhance my cyber security portfolio. The projects I add here are all personal work and are not associated with Appalachian State. Please feel free to check out my Linkedin: https://www.linkedin.com/in/owen-sirois-3a5a951ab/ and message me with comments or constructive criticism. I am all about learning and hope to learn lots throughout my IT and cybersescurity journey. :-)
+This repository contains programs that I am building to enhance my cyber security portfolio. The projects I add here are all personal work and are not associated with Appalachian State. Please feel free to check out my Linkedin: https://www.linkedin.com/in/owensirois/ and message me with comments or constructive criticism. I am all about learning and hope to learn lots throughout my IT and cybersescurity journey. :-)
 
 ## Documents
 
