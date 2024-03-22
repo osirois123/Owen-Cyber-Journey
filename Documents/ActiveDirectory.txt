@@ -1,0 +1,150 @@
+Hello! Welcome to my text file explaining and detailing my active directory project.
+
+To complete this project I was using this video tutorial by Josh Madakor on YouTube.
+Link to Josh's video: https://www.youtube.com/watch?v=MHsI8hJmggI&t=184s
+I also completed a YouTube video myself showing off my final project and some explanation of what I did.
+Link to my video:
+
+To start off the project I did some research so that I could fully understand what the project is all about. I first looked
+into what active directory is. From now on I will refer to active directory as "AD". AD is a Microsoft service that is used
+to manage devices and resources in a Windows enviornment. It acts as a central database for all devices that are connected to
+that specific network. AD is the main controller of what happens on a Windows network. It allows the administrator to control/
+organize and implement access control for all of the devices on that network. This is an extremely important part for any
+network administrator or systems administrator. It allows them to view all traffic and access in one place making the oversight
+of a network much easier. It plays a massive role in security as well. AD allows for authenitcation of users, access control
+and permissions, auditing, logging, and a fantastic general control of a network. Any aspiring cybersecurity professional should
+play around with AD and experience using it, as it often can be a weak point in a network. Now with that explanation out of the 
+way lets make our own home lab and set up AD.
+
+First we need to download VirtualBox and the extension pack. To do this go here: https://www.virtualbox.org/wiki/Downloads and
+find the download for your specific machine. I am on Mac so that is what I chose. Then also download the extension pack. Once
+that is done now we need to download Windows 10. Use this link: https://www.microsoft.com/en-us/software-download/windows10ISO
+and input the proper information on that first page. On the next page make sure to choose 64 bit and then download it somewhere
+where it can be easily found. This download may take a little longer since it is a whole operating system. Next we need to download
+the Windows server 2019 found here: https://www.microsoft.com/en-us/evalcenter/download-windows-server-2019. Use the correct
+language and make sure to download the ISO in 64 bit. Put this in the same place as the Windows 10 we just downloaded. For me it
+was easiest to just create a new folder on my desktop to organize all of the files.
+
+Now we need to open VirtualBox (VB) and create our first machine. In VB click new and then give it a name. I named this one
+"DomainController" as this is what it will act as. Choose "Other Widows 64 bit" and click continue. Now we have to choose how much
+memory this will get. I gave mine 2048 mb of my ram which in total I have 8. Use the default settings and create the virtual machine.
+Now we need to go into the settings and change some things. Go to general>advanced and switch both drop down menus to bidirectional.
+Then switch to system>processor and give it more cpu power if you have enough on your machine. Lastly go to network and make sure
+that first adapter is attached to NAT. Then adapter two should be enabled and then attach that one to internal network and click the
+ok at the bottom to save the settings. Now open up the VM we just made and when it asks for a file make sure to give it the Microsoft
+Server ISO that we downloaded. Follow the installation on the VM and use the standard desktop experience. Then choose cutosm install
+on the next page and there is only one drive to install it on so use that one. Now everything will install and this will take a while
+but it will finish up on a screen where we need to give it a username and password. Give it a simple password that you will not forget
+and then continue with the process. Now on the login screen go to the top and click input and there should be a choice that says input
+ctrl alt delete and click that. Now you are able to login to the VM using the password we made and continue this process. Now in the VM
+go back to the top and click devices. Click the choice that says insert guest additions CD image. Now find this in file explorer under
+this PC. Run the program that has amd64 at the end and then click through it all and then shut down the machine.
+
+After that reboot you should see some improved performance within the VM. Now we can start to build our network. First we should define
+exactly what we want our network to look like. In Josh's video tutorial there is a nice visual at 12:36 but I will explain what our network
+looks like. Connected to the internet is the first of three NIC (Network Interface Cards). This first NIC, I will name NIC1, is connected
+with our domain controller. This NIC1 will be the one using DHCP to allow dynamic IP addressing. Also connected to the domain controller
+is NIC2. This NIC is internal and will be connecting the domain controller to the VMWare network. This will not use DHCP and will have
+static addressing. That first enviornment is now finished. It is the first NIC1 connected to the internet and the domain controller, and
+secondly, another NIC, NIC2, that is connecting to the VMWare network. Now on the other side of the VMWare network is our other environment.
+This contains one NIC, NIC3, which will use DHCP to get IP addressing for our second device named Client1. That is the last part of this
+simple lab environment. In total it is the domain controller with two NICs connecting to the internet and the VMWare network, and then
+a single client with one NIC that is on the other side of the VMWare network. Now onto how to set up the IP addressing.
+
+Again, after the reboot, the performance should be a bit better. At the bottom right of the VM click the little icon that shows a monitor
+and an ethernet cable. After clicking the network panel, it should bring you to the settings page. Click on "change adapter options" and
+you should see two ethernet options. The first one is most likely the NIC that is connected to the internet. To confirm this you should
+click on it and view the details. If it already has a default gateway assigned to it then it means that it is NIC1 and it is already
+connected to the internet. The other one should not have any address for the default gateway and we will need to address this one
+manually. Rename each of them so you can tell them apart. Right click on the one without a gateway and click on properties. Once there 
+click on the IPv4 line. It should open a new menu allowing you to manually input some addresses. Now since we are inputing an address for
+an internal network we must have an IP address and subnet mask. I chose to do a very standard setup with more than enough subnetted
+addresses. If you are not sure of how to define an internal network and subnet please research into it, or watch my video that I made
+where I created networks using packet tracer. So under the IP address I am using 172.16.0.1 with a mask of 255.255.255.0. The default
+gateway portion will stay empty as our other NIC, NIC1, will already have that set up for us. Now lastly for a DNS server. Using AD it
+automatically sets its server as the DNS server so we can just re-input the IP address we used earlier or 127.0.0.1.
+
+Now we can change the name of the PC. Click the start menu, find system, it should take you to the about page in settings. Find the
+"rename PC button" click that and name it DomainController, or DC, or something of that sort. Now it should restart and go through
+the process of the reboot and log back in.
+
+Next step is to install AD/DS. After we do that we will need to create a domain. Go to Windows server and click add roles and features.
+Click next until the server selection page. Make sure that this PC is selected, it should be named whatever you just re-named it, and
+click next. Once you get to the service roles make sure to select AD domain services, add features, then next. Click next until the final
+screen has an install button. Click the install button and wait for the installation process to complete. Once it is all done click the
+flag with the caution sign. At the top click the link to promote this device to domain controller. A window should appear and first add
+a new forest and then put in a root domain name. I chose the name "mydomain.com". Click next and create a password. These next steps may
+take a second but just wait. Click next until the install button appears on the window. The VM should restart again. Log back in and now
+we can create our own domain admin account. Click on start, administrative tools, then AD users and computers. Once open we should see
+on the left panel the name we gave our root domain name. Righ click and select new, then organizational unit. Name it admin or something
+like that and then inside that unit click new, then user, and input your name. Then under that for the doamin name I used "a-myname"
+since that is similar to what is used in most environments. Give it a password and then the user should show up under that OU. Now we
+need to make this account the domain admin. Right click the name and go to properties, member of, and type in the name domain admins.
+Check the name and then click apply then ok. Now to use this we need to sign out and re-sign in. Make sure to click other user and use
+the credentials that you just made. Now we have made our own account in this domain.
+
+Now we need to download RAS / NAT. RAS is Remote Access Server and NAT is Network Address Translation. These will allow the client that
+we make, client1, to connect to the internet in its own private network. We install these on the domain controller so that we can control
+the client while the client still has normal access to the internet. This is done in companies and universities so that their clients
+are all on a private network and can be monitored and controled through one device. To start this we need to go to Windows Server again
+and click on add roles and features. Click next until we get to the add roles screen. This time we will add remote access, and routing.
+Then go next until the install pops up and wait for it to install. Once it finishes close the tab and we need to install NAT. Click tools
+at the top and find routing and remote access. Once there we need to right click and click configure. Click on the second option that
+says NAT and select the first option. It may give issues just restart and try again. Then finish the install and wait. When it is done
+make sure the DNS has a green circle and arrow and then make sure DNS and RAS are now on Windows server.
+
+DHCP comes next. Go back to add roles and continue to the server roles. Select DHCP and click next and then install and wait for it to
+finish. Once it is done go to tools and find DHCP and now we need to define the scope. Right click the IPv4 and create new scope. Give it
+a name, I used the IP range 172.16.0.100-200. Then make the start and ending addresses which would be 172.16.0.100 and then .200 for last
+and the mask is 24 or 255.255.255.0. No exclusions so click next. Then for the lease we can use 8 days but if you were in a cafe you would
+want much less because then as soon as someone gets an IP address it is used up for that entire lease time. Then we click yes we want to
+configure. Add the IP address you used for configuring that second NIC which in my case was 172.16.0.1. Then we need to pick a DNS server
+and this was already done when installing AD so the name we gave earlier is there. In my case it is mydomain.com. Then skip winserver and
+click yes to activate scope. Now right click the dc.mydomain.com and authorize it and then refresh the IPv4. Now it should be green and
+we have DHCP and DNS configured so urls and addressing is working as usual. Lastly go to configure this local server, find the on in the
+right side, and click it and turn all of it off. Only do this in a lab and not in a production environment.
+
+Now to make our enviornment more real we are going to create users with powershell. On the VM go to a browser and input the url:
+https://github.com/joshmadakor1/AD_PS/archive/master.zip and download that file. Extract the contents into the desktop. This script
+will generate all the users that we will need in our simulation lab. First open the names document and add your name at the top of
+the list. Click on start, go to window powershell, click on the ISE with nothing after it, run it as admin, click open, find the 
+powershell script and open it. First intput Set-ExecutionPolicy Unrestricted and click yes to all. Now the code can run once we
+add what we need to. Now explaining the script. First we set the password for all the users to "Password1". Then instead of having
+to input all the names we have the second line grab the names from the names document. Next we convert the password from plaintext
+into an object that powershell can use. Line seven creates a new organizational unit in our AD named _USERS. Now into the loop.
+The loop runs for each of the users. The first line breaks the name into a first name, the second for the last name, and then the
+third line adds the first letter of the first name and adds it to the last name and puts that into an object named username. The
+next line just is an output that shows it is creating a user and shows the username. Now for the last block of code. This creates
+a new user for each of the names. It uses the password at the top, gets the first name, last name, and username from the names doc.
+The display name and and EmployeeID are just the username. The password never expires and then it inputs the user into the new OU
+that we created in a line earlier. Now to run the code. Go to the directory that the script is in. For me that is in the c drive,
+in user a-osirois, in the desktop, and its named PS_Script. To move to this I write cd C:\users\a-osirois\desktop\PS_Script. Once 
+I am there I can click the green play button at the top and then it should show that it is creating users.
+
+Last we have to do is create the internal client to complete our project. Now we have to step away from the domain controller VM
+and create a new VM that will act as our client. Go into VirtualBox and create a new VM. Name it Client1, select windows 10 64 bit,
+I gave mine 2048 gigabytes, and continue until it appears. Now go into the settings, then advanced, and turn clipboard on. Then go
+to system, processor, give a little more if your PC can handle it for better performance. Then go to network, change NAT to internal,
+this is done because we set up our DC to control the clients on an internal network and not use NAT which would just get its network
+credentials and addresses using NAT in our local environment. Now start the VM and when it boots up it will ask for an ISO. Find
+the Windows10 ISO you downloaded and select that. Let it boot up now and we can start to set up windows. Start with next, then install,
+no product key, choose windows 10 pro, accept user agreement then next, then custom, only one drive is there so select that one and
+click next. Now it should say installing windows and just wait for it to finish. Now to configure the users. Select US or english, then
+click yes, skip, click I don't have internet, continue with limited setup, then login screen appears. I named mine user, skip the
+password, turn all the switches off, then accept, then not now, and it should take you to the windows home screen. Now we need to
+configure the IP. Go to the DC, into DHCP settings, find server options, right click, configure, find router and add the DC IP address
+which was 172.16.0.1. Now if we go to the client and ping a website it should work. Go to the command prompt in the client and type in
+ping www.google.com. If it is working you will get some replys. Now we know that our client is working and is going through the DC.
+
+Now lets rename the Client. Right click the start menu, find system, scroll down to rename this pc (advanced). Click the last button
+that says change, write the name you want (I chose Client1), then click domain and input mydomain.com or whatever you named the domain.
+Now input the credentials of the account you made in the domain. Mine was osirois and password was Password1. Then it should say welcome
+to the domain and then you must restart the client. Now go to the DC. Go to the DHCP settings. Find the scope, address leases, and look
+at what is inside. You should see one lease that was made which is that client we just made. This means that everything is working as it
+should. Now go to the start button and click AD users and computers. Go to mydomain.com and click computers. You again should see that the
+client is added into there. Now lets try to login with some of the users we made. Go to the client, click other user, choose one user
+account that was created with the Poweshell script. 
+
+Now you are done creating the environment! I hope you liked my tutorial and YT video. Now that you have a lab environment like this feel
+free to add more clients as you like, try to secure the domain and add security features that would be similar to a real environment,
+and maybe play around and find some vulnerabilities!
