@@ -3,7 +3,7 @@ Hello! Welcome to my text file explaining and detailing my active directory proj
 To complete this project I was using this video tutorial by Josh Madakor on YouTube.
 Link to Josh's video: https://www.youtube.com/watch?v=MHsI8hJmggI&t=184s
 I also completed a YouTube video myself showing off my final project and some explanation of what I did.
-Link to my video:
+Link to my video: https://youtu.be/wWL3IsRIJp4
 
 To start off the project I did some research so that I could fully understand what the project is all about. I first looked
 into what active directory is. From now on I will refer to active directory as "AD". AD is a Microsoft service that is used
